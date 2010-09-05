@@ -1,0 +1,6 @@
+GTNWDotJS is a node.js application that requires the following modules:
+
+express
+cookie-node
+
+Enjoy!
