@@ -6,14 +6,14 @@ var express = require('express'),
     connect = require('connect'),
 	sys = require('sys'),
 	cookie = require( "../cookie-node" ),
-	client = require("./lib/redis-client").createClient(),
-	hash = require("./lib/hash");
+	redis = require("./lib/redis-client").createClient(),
+	hash = require("./lib/hash"),
+	Deck = require("./lib/deck").Deck;
 var salt = "sUp3rS3CRiT$@lt";
 
-client.info(function (err, info) {
+redis.info(function (err, info) {
     if (err) throw new Error(err);
     console.log("Redis Version is: " + info.redis_version);
-    //client.close();
 });
 
 var app = module.exports = express.createServer();
@@ -52,6 +52,38 @@ app.get('/', function(req, res){
 	    	title: 'Global Thermonuclear War Dot JS',
 			customer_id: customer_id
 		}
+	});
+});
+
+app.get("/board", function(req, res){
+	console.log("Board requested!");
+	var customer_id = get_customer_id(req, res);
+	var deck = new Deck();
+	deck.deal_to(customer_id, function(user_count, com_count){
+		res.render('board.jade', {
+			locals: {
+				title: "Begin!",
+	    		user: user_count,
+				computer: com_count
+			}
+		});
+	});
+});
+
+app.get("/turn", function(req, res){
+	console.log("Hit requested");
+	var customer_id = get_customer_id(req, res);
+	var deck = new Deck();
+	deck.hit_me(customer_id, function(player_card, comp_card, winner){
+		console.log(winner + " wins this round.");
+		res.render('turn.jade', {
+			layout: false,
+			locals: {
+				winner: winner,
+				player_card: player_card,
+				comp_card: comp_card
+			}
+		});
 	});
 });
 
