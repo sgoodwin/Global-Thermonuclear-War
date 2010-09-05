@@ -44,6 +44,10 @@ function get_customer_id(req, res){
 	return customer_id;
 };
 
+function image_path(image_filename){
+	return "<img src=\"/images/" + image_filename + ".png\"\\>";
+}
+
 // Routes
 app.get('/', function(req, res){	
 	var customer_id = get_customer_id(req, res);
@@ -80,8 +84,8 @@ app.get("/turn", function(req, res){
 			layout: false,
 			locals: {
 				winner: winner,
-				player_card: player_card,
-				comp_card: comp_card
+				player_card: image_path(player_card),
+				comp_card: image_path(comp_card)
 			}
 		});
 	});
