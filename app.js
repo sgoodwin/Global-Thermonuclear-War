@@ -74,13 +74,15 @@ app.get("/board", function(req, res){
 	});
 });
 
+app.redirect('player', '/player');
+app.redirect('computer', '/computer');
+
 app.get("/turn", function(req, res){
 	console.log("Hit requested");
 	var customer_id = get_customer_id(req, res);
 	var deck = new Deck();
 	deck.regroup_check(customer_id, function(){
-		deck.hit_me(customer_id, function(player_card, comp_card, winner){
-			console.log(winner + " wins this round.");
+		deck.hit_me(customer_id, function(player_card, comp_card, winner){			
 			res.render('turn.jade', {
 				layout: false,
 				locals: {
@@ -89,7 +91,33 @@ app.get("/turn", function(req, res){
 					comp_card: image_path(comp_card)
 				}
 			});
+		}, function(winner){
+			if(customer_id == winner){
+				res.render('player.jade', {
+					layout: false
+				});
+			}else{
+				res.render('computer.jade', {
+					layout : false
+				});
+			}
 		});
+	});
+});
+
+app.get("/computer", function(req, res){
+	res.render('computer.jade', {
+		locals: {
+	    	title: 'Global Thermonuclear War Dot JS'
+		}
+	});
+});
+
+app.get("/player", function(req, res){
+	res.render('player.jade', {
+		locals: {
+	    	title: 'Global Thermonuclear War Dot JS'
+		}
 	});
 });
 
