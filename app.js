@@ -78,15 +78,17 @@ app.get("/turn", function(req, res){
 	console.log("Hit requested");
 	var customer_id = get_customer_id(req, res);
 	var deck = new Deck();
-	deck.hit_me(customer_id, function(player_card, comp_card, winner){
-		console.log(winner + " wins this round.");
-		res.render('turn.jade', {
-			layout: false,
-			locals: {
-				winner: winner,
-				player_card: image_path(player_card),
-				comp_card: image_path(comp_card)
-			}
+	deck.regroup_check(customer_id, function(){
+		deck.hit_me(customer_id, function(player_card, comp_card, winner){
+			console.log(winner + " wins this round.");
+			res.render('turn.jade', {
+				layout: false,
+				locals: {
+					winner: winner,
+					player_card: image_path(player_card),
+					comp_card: image_path(comp_card)
+				}
+			});
 		});
 	});
 });
